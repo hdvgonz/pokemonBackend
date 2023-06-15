@@ -16,18 +16,23 @@ export class PokemonController {
   constructor(private readonly pokemonService: PokemonService) {}
 
   @Post()
-  create(@Body() createPokemonDto: CreatePokemonDto) {
-    return this.pokemonService.create(createPokemonDto);
+  async create(@Body() createPokemonDto: CreatePokemonDto) {
+    return await this.pokemonService.create(createPokemonDto);
   }
 
   @Get()
-  findAll() {
-    return this.pokemonService.findAll();
+  async findAll() {
+    return await this.pokemonService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.pokemonService.findOne(+id);
+  async findOneById(@Param('id') id: string) {
+    return await this.pokemonService.findOneById(id);
+  }
+
+  @Get(':name')
+  async findOneByName(@Param('name') name: string) {
+    return await this.pokemonService.findOneByname(name);
   }
 
   @Patch(':id')
@@ -37,6 +42,6 @@ export class PokemonController {
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.pokemonService.remove(+id);
+    return this.pokemonService.remove(id);
   }
 }
