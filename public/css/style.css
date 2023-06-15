@@ -1,0 +1,17 @@
+*{
+    margin: 0px;
+    padding: 0px;
+}
+
+html {
+    font-size: 62.5%;
+}
+
+html, body {
+    background-color: grey;
+}
+
+h1 {
+    font-size: 2rem;
+    color: white;
+}
