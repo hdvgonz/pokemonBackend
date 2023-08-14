@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { MongooseModule } from '@nestjs/mongoose';
 import { join } from 'path';
 import { Module } from '@nestjs/common';

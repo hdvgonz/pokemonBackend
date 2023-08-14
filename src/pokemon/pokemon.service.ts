@@ -23,6 +23,10 @@ export class PokemonService {
       const newPokemon = new this.pokemonModel(createPokemonDto);
       return await newPokemon.save();
     } catch (error) {
+
+      // if (error.code === 11000 ) {
+      //   throw new BadRequestException(`Pokemon exists DB, ${ JSON.stringify( error.keyValue)}`);
+      // }
       this.handleException(error);
     }
   }
@@ -31,7 +35,7 @@ export class PokemonService {
     return await this.pokemonModel.find();
   }
 
-  async findOne(term: string) {
+  async findOne(term: string): Promise<Pokemon> {
     let pokemon: Pokemon;
 
     if (!isNaN(+term)) {
@@ -65,13 +69,14 @@ export class PokemonService {
       updatePokemonDto.name = updatePokemonDto.name.toLowerCase();
 
     //Colocamos el new en true para que regrese enseguida el objeto modificado
-    // const updatedPokemon = await pokemon.updateOne(updatePokemonDto, {
+    // const updatedPokemon = await pokemon.updateOne (updatePokemonDto, {
     //   new: true,
     // });
     try {
       await pokemon.updateOne(updatePokemonDto, {
         new: true,
       });
+      //Exparcimos las propiedades del Pokemon y le voy a sobre escribir las propiedades del nuevo Pokemon.
       return { ...pokemon.toJSON(), ...updatePokemonDto };
     } catch (error) {
       this.handleException(error);

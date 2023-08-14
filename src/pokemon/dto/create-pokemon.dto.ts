@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { IsInt, IsPositive, IsString, Min, MinLength } from 'class-validator';
 
 export class CreatePokemonDto {
