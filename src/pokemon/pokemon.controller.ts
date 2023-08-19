@@ -9,11 +9,13 @@ import {
   Delete,
   HttpCode,
   HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { PokemonService } from './pokemon.service';
 import { CreatePokemonDto } from './dto/create-pokemon.dto';
 import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
+import { PaginationDto } from 'src/common/dto/pagination.dto';
 
 @Controller('pokemon')
 export class PokemonController {
@@ -25,9 +27,12 @@ export class PokemonController {
     return await this.pokemonService.create(createPokemonDto);
   }
 
+  /**
+   * En el DTO se definió limit y offset como numbers, por lo tanto debo ir al main.ts y en el validator pipe debo agregar las propiedades que me permitan hacer esa transformación.
+   */
   @Get()
-  async findAll() {
-    return await this.pokemonService.findAll();
+  async findAll(@Query() paginationDto: PaginationDto) {
+    return await this.pokemonService.findAll( paginationDto );
   }
 
   @Get(':id')

@@ -10,6 +10,7 @@ import { UpdatePokemonDto } from './dto/update-pokemon.dto';
 import { Model, isValidObjectId } from 'mongoose';
 import { Pokemon } from './entities/pokemon.entity';
 import { InjectModel } from '@nestjs/mongoose';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Injectable()
 export class PokemonService {
@@ -31,8 +32,16 @@ export class PokemonService {
     }
   }
 
-  async findAll(): Promise<Pokemon[]> {
-    return await this.pokemonModel.find();
+  async findAll(paginationDto: PaginationDto): Promise<Pokemon[]> {
+    const {limit = 10} = paginationDto;
+    const {offset = 0} = paginationDto;
+    return await this.pokemonModel.find()
+      .limit( limit )
+      .skip( offset )
+      .sort({
+        no: 1 //Ordene la columna no de manera ascendente
+      })
+      .select('-__v') //Saco la columna __v de la respuesta
   }
 
   async findOne(term: string): Promise<Pokemon> {
@@ -89,6 +98,8 @@ export class PokemonService {
     // const result = await this.pokemonModel.findByIdAndDelete(id);
     // return result;
     //const result = await this.pokemonModel.deleteOne({ _id: id })
+
+    //deletedCount es el numero de registros elimiandos que sale en mongo 
     const {deletedCount} = await this.pokemonModel.deleteOne({ _id: id })
     if (deletedCount === 0) {
       throw new BadRequestException(`Pokemon with id "${id} not Found`)
