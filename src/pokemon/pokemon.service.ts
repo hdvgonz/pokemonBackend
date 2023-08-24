@@ -11,11 +11,16 @@ import { Model, isValidObjectId } from 'mongoose';
 import { Pokemon } from './entities/pokemon.entity';
 import { InjectModel } from '@nestjs/mongoose';
 import { PaginationDto } from '../common/dto/pagination.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class PokemonService {
+
+private defaultLimit: number = this.configService.get<number>('defaultLimit');
+
   constructor(
     @InjectModel(Pokemon.name) private readonly pokemonModel: Model<Pokemon>,
+    private readonly configService: ConfigService,
   ) {}
 
   async create(createPokemonDto: CreatePokemonDto) {
@@ -24,7 +29,6 @@ export class PokemonService {
       const newPokemon = new this.pokemonModel(createPokemonDto);
       return await newPokemon.save();
     } catch (error) {
-
       // if (error.code === 11000 ) {
       //   throw new BadRequestException(`Pokemon exists DB, ${ JSON.stringify( error.keyValue)}`);
       // }
@@ -33,15 +37,16 @@ export class PokemonService {
   }
 
   async findAll(paginationDto: PaginationDto): Promise<Pokemon[]> {
-    const {limit = 10} = paginationDto;
-    const {offset = 0} = paginationDto;
-    return await this.pokemonModel.find()
-      .limit( limit )
-      .skip( offset )
+    const { limit = this.defaultLimit} = paginationDto;
+    const { offset = 0 } = paginationDto;
+    return await this.pokemonModel
+      .find()
+      .limit(limit)
+      .skip(offset)
       .sort({
-        no: 1 //Ordene la columna no de manera ascendente
+        no: 1, //Ordene la columna no de manera ascendente
       })
-      .select('-__v') //Saco la columna __v de la respuesta
+      .select('-__v'); //Saco la columna __v de la respuesta
   }
 
   async findOne(term: string): Promise<Pokemon> {
@@ -99,10 +104,10 @@ export class PokemonService {
     // return result;
     //const result = await this.pokemonModel.deleteOne({ _id: id })
 
-    //deletedCount es el numero de registros elimiandos que sale en mongo 
-    const {deletedCount} = await this.pokemonModel.deleteOne({ _id: id })
+    //deletedCount es el numero de registros elimiandos que sale en mongo
+    const { deletedCount } = await this.pokemonModel.deleteOne({ _id: id });
     if (deletedCount === 0) {
-      throw new BadRequestException(`Pokemon with id "${id} not Found`)
+      throw new BadRequestException(`Pokemon with id "${id} not Found`);
     }
     return;
   }

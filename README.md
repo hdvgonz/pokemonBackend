@@ -14,14 +14,26 @@ npm install
 npm install -g @nest/cli
 ```
 
-4. Levantar la BD
+4. Borrar carpeta Mongo y Levantar la BD
 ```
 docker-compose up -d
 ```
-5. Reconstruir la Base de Datos con la semilla
+
+5. Clonar el archivo __.env.template__ y renombrarle a __.env__
+
+6. Llenar las variables de entorno definidad en el ```.env```
+
+7. Ejecutar la aplicacion en dev:
+```
+npm run start:dev
+```
+
+8. Reconstruir la Base de Datos con la semilla
 ```
 http://localhost:3000/api/v2/seed
 ```
+
+
 
 ## Stack Usado
 *MongoDB
